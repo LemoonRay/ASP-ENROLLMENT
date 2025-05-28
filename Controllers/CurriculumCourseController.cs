@@ -107,7 +107,7 @@ public JsonResult AssignCourses(List<CurriculumCourse> courses)
             {
                 conn.Open();
                 string sql = @"
-            SELECT c.crs_code, cr.crs_title
+            SELECT c.crs_code, cr.crs_title, cr.ctg_code, cr.crs_units, cr.crs_lec, cr.crs_lab
             FROM curriculum_course c
             INNER JOIN course cr ON c.crs_code = cr.crs_code
             WHERE c.prog_code = @progCode AND c.cur_year_level = @yearLevel AND c.cur_semester = @semester AND c.ay_code = @ayCode";
@@ -126,7 +126,11 @@ public JsonResult AssignCourses(List<CurriculumCourse> courses)
                             courses.Add(new
                             {
                                 code = reader.GetString(0),
-                                title = reader.GetString(1)
+                                title = reader.GetString(1),
+                                category = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                                units = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                                lec = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                                lab = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5)
                             });
                         }
                     }
@@ -135,6 +139,71 @@ public JsonResult AssignCourses(List<CurriculumCourse> courses)
 
             return Json(courses, JsonRequestBehavior.AllowGet);
         }
+        
+        [HttpGet]
+        public JsonResult CheckMissingPrerequisites(string progCode, string yearLevel, string semester, string ayCode)
+        {
+            var missingPrereqCourses = new List<string>();
+
+            using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Enrollment"].ConnectionString))
+            {
+                conn.Open();
+
+                string sql = @"
+                    WITH taken_courses AS (
+                        SELECT crs_code
+                        FROM curriculum_course cc
+                        INNER JOIN academic_year ay ON cc.ay_code = ay.ay_code
+                        WHERE cc.prog_code = @progCode
+                          AND (
+                            ay.ay_start_year < (SELECT ay_start_year FROM academic_year WHERE ay_code = @ayCode)
+                            OR (
+                                ay.ay_start_year = (SELECT ay_start_year FROM academic_year WHERE ay_code = @ayCode)
+                                AND (
+                                    CAST(REGEXP_REPLACE(cc.cur_year_level, '\D', '', 'g') AS INTEGER) < CAST(REGEXP_REPLACE(@yearLevel, '\D', '', 'g') AS INTEGER)
+                                    OR (
+                                        CAST(REGEXP_REPLACE(cc.cur_year_level, '\D', '', 'g') AS INTEGER) = CAST(REGEXP_REPLACE(@yearLevel, '\D', '', 'g') AS INTEGER)
+                                        AND CAST(REGEXP_REPLACE(cc.cur_semester, '\D', '', 'g') AS INTEGER) < CAST(REGEXP_REPLACE(@semester, '\D', '', 'g') AS INTEGER)
+                                    )
+                                )
+                            )
+                          )
+                    ),
+                    course_prereqs AS (
+                        SELECT c.crs_code, p.preq_crs_code
+                        FROM course c
+                        LEFT JOIN prerequisite p ON c.crs_code = p.crs_code
+                        WHERE p.preq_crs_code IS NOT NULL
+                    )
+                    SELECT DISTINCT cp.crs_code
+                    FROM course_prereqs cp
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM taken_courses tc WHERE tc.crs_code = cp.preq_crs_code
+                    )
+                ";
+
+                using (var cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@progCode", progCode);
+                    cmd.Parameters.AddWithValue("@yearLevel", yearLevel);
+                    cmd.Parameters.AddWithValue("@semester", semester);
+                    cmd.Parameters.AddWithValue("@ayCode", ayCode);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            missingPrereqCourses.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+
+            return Json(missingPrereqCourses, JsonRequestBehavior.AllowGet);
+        }
+
+
+
 
 
         [HttpGet]
