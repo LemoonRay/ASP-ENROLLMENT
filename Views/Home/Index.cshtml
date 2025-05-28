@@ -1,5 +1,5 @@
 @{
-    Layout = null; 
+Layout = null;
 }
 
 <!DOCTYPE html>
@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cebu Technological University | Student Enrollment System</title>
+    <title>XYZ University | Enrollment System</title>
 
     <link rel="stylesheet" href="@Url.Content("~/Scripts/bootstrap.min.css")" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,8 +18,6 @@
         :root {
             --button-blue: #007bff;
             --button-blue-hover: #0056b3;
-            --button-purple: #6f42c5;
-            --button-purple-hover: #5b36a8;
             --light-grey: #f8f9fa;
             --text-dark: #343a40;
             --text-light: #6c757d;
@@ -108,15 +106,9 @@
         .btn-login-custom {
             background-color: var(--button-blue);
         }
+
         .btn-login-custom:hover {
             background-color: var(--button-blue-hover);
-        }
-
-        .btn-signup-custom {
-            background-color: var(--button-purple);
-        }
-        .btn-signup-custom:hover {
-            background-color: var(--button-purple-hover);
         }
 
         .image-section {
@@ -208,23 +200,19 @@
             transform: none;
         }
     </style>
-
 </head>
 <body>
+
 <div class="content-section">
     <div class="content-wrapper">
-        <h1>Cebu Technological University</h1>
-        <p class="system-subtitle">Student Enrollment System</p>
-        <p>Welcome to the CTU Enrollment System, designed to empower aspiring minds. Explore our leading-edge degree programs, seamlessly manage your application, and step into a future of innovation, research, and community-responsive education.</p>
+        <h1>XYZ University</h1>
+        <p class="system-subtitle">Enrollment System</p>
+        <p>Welcome to the XYZ University Enrollment System your first step into academic excellence. Access enrollment tools, manage your records, and prepare for success in an innovative learning environment.</p>
         <div class="btn-group-main">
-            <a href="@Url.Action("Login", "Login")" aria-label="Login to CTU Student Portal">
-                <button class="btn btn-custom btn-login-custom">Login to Portal</button>
-            </a>
-            <a asp-controller="Student" asp-action="SignUp" aria-label="Apply now for CTU Enrollment">
-                <button class="btn btn-custom btn-signup-custom">Apply Now</button>
+            <a href="@Url.Action("Login", "Login")" aria-label="Login to XYZ University Enrollment System">
+                <button class="btn btn-custom btn-login-custom">Login</button>
             </a>
         </div>
-
     </div>
 </div>
 

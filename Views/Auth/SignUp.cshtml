@@ -1,6 +1,6 @@
 @{
-    Layout = null;
-    ViewBag.Title = "Student Sign Up";
+Layout = null;
+ViewBag.Title = "Student Sign Up";
 }
 
 <!DOCTYPE html>
@@ -43,19 +43,17 @@
 
     @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
     {
-        <div class="alert alert-danger text-center mb-4">
-            @ViewBag.ErrorMessage
-        </div>
+    <div class="alert alert-danger text-center mb-4">
+        @ViewBag.ErrorMessage
+    </div>
     }
 
     <div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                @Html.Label("studCode", "Student ID Number:", new { @class = "form-label" })
-                @Html.TextBox("studCode", null, new { @class = "form-control", type = "number", placeholder = "XXXXXXX", required = "required" })
-                <div class="invalid-feedback">
-                    Please enter your student ID number
-                </div>
+        <div class="col-md-6">
+            @Html.Label("emailAddress", "Email Address:", new { @class = "form-label" })
+            @Html.TextBox("emailAddress", null, new { @class = "form-control", type = "email", placeholder = "Email Address", required = "required" })
+            <div class="invalid-feedback">
+                Please enter a valid email address
             </div>
         </div>
 
@@ -96,13 +94,6 @@
                 @Html.TextBox("contactNo", null, new { @class = "form-control", type = "tel", placeholder = "Contact Number", required = "required" })
                 <div class="invalid-feedback">
                     Please enter your contact number
-                </div>
-            </div>
-            <div class="col-md-6">
-                @Html.Label("emailAddress", "Email Address:", new { @class = "form-label" })
-                @Html.TextBox("emailAddress", null, new { @class = "form-control", type = "email", placeholder = "Email Address", required = "required" })
-                <div class="invalid-feedback">
-                    Please enter a valid email address
                 </div>
             </div>
         </div>

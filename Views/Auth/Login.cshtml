@@ -19,40 +19,6 @@
             background-color: #f8f9fa;
         }
 
-        .login-header-nav-wrapper {
-            width: 100%;
-            background-color: #e9ecef;
-            padding: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,.05);
-            margin-bottom: 30px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .login-header-nav {
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .login-header-nav a {
-            padding: 0 10px;
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 500;
-        }
-
-        .login-header-nav a.active {
-            color: #343a40;
-            font-weight: 700;
-            cursor: default;
-        }
-
-        .login-header-nav a:not(.active):hover {
-            text-decoration: underline;
-        }
-
         .login-container {
             background-color: #ffffff;
             padding: 30px;
@@ -67,12 +33,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<div class="login-header-nav-wrapper">
-    <div class="login-header-nav">
-        <a class="active">Student</a> |
-        <a href="@Url.Action("LoginFaculty", "Auth")">Faculty</a>
-    </div>
-</div>
 
 <div class="login-container">
     <h2 class="text-center mb-4">Student Login</h2>
@@ -92,22 +52,44 @@
 
     <div>
         @Html.AntiForgeryToken()
+
         <div class="mb-3">
-            <label for="idNumber" class="form-label">ID Number</label>
-            <input type="text" class="form-control" id="idNumber" name="IDNumber" placeholder="Enter ID Number" required/>
+            <label for="emailAddress" class="form-label">Email Address</label>
+            <input type="text" class="form-control" id="emailAddress" name="Stud_Email" placeholder="Enter email" required />
         </div>
+
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="Password" placeholder="Enter Password" required/>
+            <input type="password" class="form-control" id="password" name="Password" placeholder="Enter Password" required />
         </div>
+
+        <!-- Login type dropdown placed here -->
+        <div class="mb-3">
+            <label for="loginTypeSwitcher" class="form-label">Login as</label>
+            <select id="loginTypeSwitcher" class="form-select">
+                <option value="student" selected>Student</option>
+                <option value="faculty">Faculty</option>
+            </select>
+        </div>
+
         <button id="btn" type="submit" class="btn btn-primary w-100">Login</button>
+
         <p class="text-center mt-3">
             Don't have an account? <a href="@Url.Action("Entry", "Auth")">Sign Up</a>
         </p>
     </div>
 </div>
+
 <script src="~/Scripts/JQuery/jquery.js"></script>
 <script src="~/Scripts/MyScript/LogIn.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("loginTypeSwitcher").addEventListener("change", function () {
+        const selected = this.value;
+        if (selected === "faculty") {
+            window.location.href = '@Url.Action("LoginFaculty", "Auth")';
+        }
+    });
+</script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 ﻿@{
-Layout = null;
-ViewBag.Title = "Admin Login";
+    Layout = null;
+    ViewBag.Title = "Faculty Login";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -19,40 +19,6 @@ ViewBag.Title = "Admin Login";
             background-color: #f8f9fa;
         }
 
-        .login-header-nav-wrapper {
-            width: 100%;
-            background-color: #e9ecef;
-            padding: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,.05);
-            margin-bottom: 30px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .login-header-nav {
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .login-header-nav a {
-            padding: 0 10px;
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 500;
-        }
-
-        .login-header-nav a.active {
-            color: #343a40;
-            font-weight: 700;
-            cursor: default;
-        }
-
-        .login-header-nav a:not(.active):hover {
-            text-decoration: underline;
-        }
-
         .login-container {
             background-color: #ffffff;
             padding: 30px;
@@ -62,6 +28,7 @@ ViewBag.Title = "Admin Login";
             max-width: 400px;
             margin-top: 80px;
         }
+
         .form-control.is-invalid:focus {
             border-color: #dc3545;
             box-shadow: 0 0 0 0.2rem rgba(220,53,69,.25);
@@ -71,34 +38,37 @@ ViewBag.Title = "Admin Login";
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<div class="login-header-nav-wrapper">
-    <div class="login-header-nav">
-        <a href="@Url.Action("Login", "Login")">Student</a> |
-        <a href="@Url.Action("LoginFaculty", "Auth")">Faculty</a>
-    </div>
-</div>
 
 <div class="login-container">
     <h2 class="text-center mb-4">Faculty Login</h2>
 
     @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
     {
-    <div class="alert alert-danger text-center">
-        @ViewBag.ErrorMessage
-    </div>
+        <div class="alert alert-danger text-center">
+            @ViewBag.ErrorMessage
+        </div>
     }
 
     <div>
-
         <div class="mb-3">
             @Html.Label("Id", "Username", new { @class = "form-label" })
             @Html.TextBox("username", null, new { @class = "form-control", @id = "username", placeholder = "Enter Username" })
             <div hidden id="user-inv" class="invalid-feedback">Please enter your username</div>
         </div>
+
         <div class="mb-3">
             @Html.Label("password", "Password", new { @class = "form-label" })
             @Html.Password("password", null, new { @class = "form-control", @id = "password", placeholder = "Enter Password" })
-            <div hidden id="pass-inv"class="invalid-feedback">Please enter your password</div>
+            <div hidden id="pass-inv" class="invalid-feedback">Please enter your password</div>
+        </div>
+
+        <!-- Login type dropdown -->
+        <div class="mb-3">
+            <label for="loginTypeSwitcher" class="form-label">Login as</label>
+            <select id="loginTypeSwitcher" class="form-select">
+                <option value="faculty" selected>Faculty</option>
+                <option value="student">Student</option>
+            </select>
         </div>
 
         <button id="btn" type="submit" class="btn btn-primary w-100">Login</button>
@@ -108,6 +78,14 @@ ViewBag.Title = "Admin Login";
 <script src="~/Scripts/JQuery/jquery.js"></script>
 <script src="~/Scripts/MyScript/LogInFaculty.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("loginTypeSwitcher").addEventListener("change", function () {
+        const selected = this.value;
+        if (selected === "student") {
+            window.location.href = '@Url.Action("Login", "Login")';
+        }
+    });
+</script>
 
 </body>
 </html>

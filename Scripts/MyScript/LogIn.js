@@ -1,16 +1,19 @@
-$().ready(function () {
+$(document).ready(function () {
     $('#btn').click(function (e) {
-        e.preventDefault(); // Prevent form submission if needed
-        var idNumber = parseInt($('#idNumber').val(), 10);
-        
+        e.preventDefault(); // Prevent form submission
+
+        var email = $('#emailAddress').val(); // Use email input field
+        var password = $('#password').val();
+
         const student = {
-            Stud_Code: idNumber,
-            Stud_Password: $('#password').val()
+            Stud_Email: email,
+            Stud_Password: password
         };
 
         const token = $('input[name="__RequestVerificationToken"]').val();
 
         console.log(student);
+
         $.ajax({
             type: 'POST',
             url: '/Auth/LoginStudent',

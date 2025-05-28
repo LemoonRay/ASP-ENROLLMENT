@@ -8,9 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b3e7d800-34df-40fc-b921-9544f37113d3" name="Changes" comment="- Jayson's Delete Course function">
+      <change afterPath="$PROJECT_DIR$/Controllers/CurriculumController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scripts/MyScript/AddCurriculum.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fresh_University_Enrollment/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fresh_University_Enrollment/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controllers/StudentEnrollment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/StudentEnrollment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/Main/StudentEnroll.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Main/StudentEnroll.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/config/applicationhost.config" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/config/applicationhost.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controllers/Auth/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/Auth/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fresh_University_Enrollment.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Fresh_University_Enrollment.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scripts/MyScript/LogIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/MyScript/LogIn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Admin/Curriculum.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Admin/Curriculum.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Auth/Login.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Auth/Login.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Auth/LoginFaculty.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Auth/LoginFaculty.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Auth/SignUp.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Auth/SignUp.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Home/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Home/Index.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Web.config" beforeDir="false" afterPath="$PROJECT_DIR$/Web.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,20 +105,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.Fresh_University_Enrollment - IIS Express.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev-null-2",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.Fresh_University_Enrollment - IIS Express.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Fresh_University_Enrollment - IIS Express" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -117,8 +126,13 @@
       <option name="WORKING_DIRECTORY" value="" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
       <option name="PROJECT_PATH" value="$PROJECT_DIR$/Fresh_University_Enrollment.csproj" />
       <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
@@ -149,6 +163,9 @@
       <workItem from="1748363487810" duration="160000" />
       <workItem from="1748363658111" duration="4464000" />
       <workItem from="1748371094016" duration="7337000" />
+      <workItem from="1748380741521" duration="1371000" />
+      <workItem from="1748382332030" duration="4996000" />
+      <workItem from="1748439452925" duration="68000" />
     </task>
     <task id="LOCAL-00001" summary="add curriculum good">
       <option name="closed" value="true" />
