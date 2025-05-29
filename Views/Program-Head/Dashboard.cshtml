@@ -1,15 +1,21 @@
 @{
     ViewBag.Title = "Program Head Dashboard";
     Layout = "~/Views/Shared/_ProgramHeadHeader.cshtml";
+
+    var student = (ViewBag.statList != null && ViewBag.statList.Count > 0) ? ViewBag.statList[0] : 0;
+    var admin = (ViewBag.statList != null && ViewBag.statList.Count > 1) ? ViewBag.statList[1] : 0;
+    var professor = (ViewBag.statList != null && ViewBag.statList.Count > 2) ? ViewBag.statList[2] : 0;
+    var programHead = (ViewBag.statList != null && ViewBag.statList.Count > 3) ? ViewBag.statList[3] : 0;
+    var course = (ViewBag.statList != null && ViewBag.statList.Count > 4) ? ViewBag.statList[4] : 0;
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewBag.Title</title>
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -18,14 +24,12 @@
             display: flex;
             flex-direction: column;
         }
-
         .content-section {
             padding: 30px;
             flex-grow: 1;
             margin-top: 56px; /* Adjust based on header height */
         }
-
-        .info-card {
+        .info-card, .stat-card {
             background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
@@ -33,48 +37,115 @@
             margin-bottom: 20px;
             text-align: center;
         }
-
-        .info-card h4 {
+        .info-card h4, .stat-card h4 {
             color: #007bff;
             margin-bottom: 15px;
         }
-
         .info-card p {
             font-size: 1.1em;
             color: #555;
         }
+        #programSelect {
+            max-width: 300px;
+            margin-bottom: 30px;
+        }
+        .stat-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .stat-card {
+            flex: 1 1 calc(33% - 20px);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-card h4 {
+            margin-bottom: 12px;
+        }
+        .stat-card .count {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #212529;
+        }
+
+        /* Correctly escaped media query */
+        @@media (max-width: 768px) {
+            .stat-card {
+                flex: 1 1 100%;
+            }
+        }
     </style>
 </head>
 <body>
-
-
-
-<!-- Main Content -->
 <div class="container content-section">
-    <h1 class="mb-4">Program Head Dashboard</h1>
+    <h1 class="mb-4">@ViewBag.Title</h1>
     <p class="lead">Welcome, Program Head! Here's a quick overview of your responsibilities.</p>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="info-card">
-                <h4>Enrollment Approvals</h4>
-                <p>Review and approve pending student enrollments.</p>
-                <a href="@Url.Action("Approval", "ProgramHead")" class="btn btn-primary">Go to Approvals</a>
-            </div>
+    <!-- Program Select Dropdown -->
+    <label for="programSelect" class="form-label">Select Program</label>
+    <select id="programSelect" name="programSelect" class="form-select" style="max-width: 300px;">
+        <option value="">-- Select Program --</option>
+        @if (ViewBag.Programs != null)
+        {
+            foreach (var program in ViewBag.Programs)
+            {
+                <option value="@program.ProgCode">@program.ProgTitle</option>
+            }
+        }
+        else
+        {
+            <option disabled>No programs available</option>
+        }
+    </select>
+
+    <div class="stat-cards">
+        <div class="stat-card">
+            <h4>Enrollment Approvals</h4>
+            <p>Review and approve pending student enrollments.</p>
+            <a href="@Url.Action("Approval", "ProgramHead")" class="btn btn-primary">Go to Approvals</a>
         </div>
-        <div class="col-md-4">
-            <div class="info-card">
-                <h4>Set Schedules</h4>
-                <p>Manage and set course schedules for your program.</p>
-                <a href="@Url.Action("Schedule", "ProgramHead")" class="btn btn-primary">Manage Schedules</a>
-            </div>
+
+        <div class="stat-card">
+            <h4>Set Schedules</h4>
+            <p>Manage and set course schedules for your program.</p>
+            <a href="@Url.Action("Schedule", "ProgramHead")" class="btn btn-primary">Manage Schedules</a>
         </div>
-        <div class="col-md-4">
-            <div class="info-card">
-                <h4>Student Management</h4>
-                <p>Oversee faculty and staff assignments within your program.</p>
-                <a href="@Url.Action("StudentManagement", "ProgramHead")" class="btn btn-primary">Manage Student</a>
-            </div>
+
+        <div class="stat-card">
+            <h4>Student Management</h4>
+            <p>Oversee faculty and staff assignments within your program.</p>
+            <a href="@Url.Action("StudentManagement", "ProgramHead")" class="btn btn-primary">Manage Students</a>
+        </div>
+    </div>
+
+    <div class="stat-cards" style="margin-top:40px;">
+        <div class="stat-card">
+            <h4>Total Students</h4>
+            <div class="count">@student</div>
+        </div>
+        <div class="stat-card">
+            <h4>Total Admins</h4>
+            <div class="count">@admin</div>
+        </div>
+        <div class="stat-card">
+            <h4>Total Teachers</h4>
+            <div class="count">@professor</div>
+        </div>
+        <div class="stat-card">
+            <h4>Total Program Heads</h4>
+            <div class="count">@programHead</div>
+        </div>
+        <div class="stat-card">
+            <h4>Total Courses</h4>
+            <div class="count">@course</div>
+        </div>
+        <div class="stat-card">
+            <h4>Total Subjects</h4>
+            <div class="count">@ViewBag.TotalSubjects ?? "N/A"</div>
         </div>
     </div>
 </div>
@@ -82,25 +153,23 @@
 <script src="~/Scripts/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
-                // Highlight active link
-                const currentPath = window.location.pathname;
-                const currentPage = currentPath.substring(currentPath.lastIndexOf('/') + 1);
-                const navLinks = document.querySelectorAll('#navbarNavProgramHead .nav-link');
+        const currentPath = window.location.pathname;
+        const currentPage = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+        const navLinks = document.querySelectorAll('#navbarNavProgramHead .nav-link');
 
-                navLinks.forEach(link => {
-                    const linkHref = link.getAttribute('href');
-                    const linkPage = linkHref.substring(linkHref.lastIndexOf('/') + 1);
+        navLinks.forEach(link => {
+            const linkHref = link.getAttribute('href');
+            const linkPage = linkHref.substring(linkHref.lastIndexOf('/') + 1);
 
-                    if (linkPage.toLowerCase() === currentPage.toLowerCase()) {
-                        link.classList.add('active');
-                        link.setAttribute('aria-current', 'page');
-                    } else {
-                        link.classList.remove('active');
-                        link.removeAttribute('aria-current');
-                    }
-                });
-            })
+            if (linkPage.toLowerCase() === currentPage.toLowerCase()) {
+                link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
+            } else {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+            }
+        });
+    });
 </script>
 </body>
 </html>

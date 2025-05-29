@@ -63,7 +63,7 @@ $(document).ready(function () {
         function createCourseRow(course, isChecked) {
             const hasMissingPrereq = coursesWithMissingPrereq.has(course.code);
             const disabledAttr = hasMissingPrereq ? 'disabled' : '';
-            const notice = hasMissingPrereq ? '<br><small style="color:red;">Prerequisite not met</small>' : '';
+            const notice = hasMissingPrereq ? '<br><small style="color:red;">Prerequisite not assigned in earlier sem/yr</small>' : '';
 
             return $(`
                 <tr>

@@ -1,232 +1,398 @@
+@model Fresh_University_Enrollment.Models.Schedule
+@using Fresh_University_Enrollment.Models
+@using System.Collections.Generic
+@using System.Linq
+
 @{
-    ViewBag.Title = "Schedule Management";
     Layout = "~/Views/Shared/_ProgramHeadHeader.cshtml";
+    ViewBag.Title = "Set Course Schedules";
+
+    var sections = ViewBag.Sections as List<Section> ?? new List<Section>();
+    var academicYears = ViewBag.AcademicYears as List<AcademicYear> ?? new List<AcademicYear>();
+    var semesters = ViewBag.Semesters as List<string> ?? new List<string>();
+    var rooms = ViewBag.Rooms as List<Room> ?? new List<Room>();
+    var instructors = ViewBag.Instructors as List<Instructor> ?? new List<Instructor>();
+    var courses = ViewBag.Courses as List<Course> ?? new List<Course>();
 }
-@using Newtonsoft.Json
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
-        &::-webkit-scrollbar { display: none; }
-        .content-section { padding: 30px; flex-grow: 1; }
-        .schedule-container { background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 30px; }
-        .filter-section { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
-    </style>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
+<h2>@ViewBag.Title</h2>
 
-<div class="container content-section">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Schedule Management</h1>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addScheduleModal">Add Course Schedule</button>
-    </div>
+<style>
+  .schedule-container {
+    display: flex;
+    gap: 2rem;
+  }
+  .schedule-form {
+    flex: 1;
+    max-width: 600px;
+  }
+  .schedule-view {
+    flex: 1;
+    max-width: 600px;
+    border-left: 1px solid #ddd;
+    padding-left: 1rem;
+  }
+  .filter-group select {
+    margin-bottom: 1rem;
+  }
+</style>
 
-    <div class="schedule-container">
-        <div class="filter-section">
-            <!-- Course selector -->
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Course</label>
-                <select class="form-select"><option>Select</option>
-                    @{
-                        var courses = ViewBag.Course as List<Fresh_University_Enrollment.Models.Course>;
-                    }
-                    @if (courses != null && courses.Any())
-                    {
-                        foreach (var course in courses)
-                        {
-                            <option value="@course.Crs_Code">@course.Crs_Title</option>
-                        }
-                    }
-                    else
-                    {
-                        <option disabled>No Course found</option>
-                    }
-                    
-                </select>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-primary">
-                <tr><th>Schedule Code</th><th>Description</th><th>Professor</th><th>Room</th><th>Actions</th></tr>
-                </thead>
-                <tbody>
-                
-                @foreach (var sched in ViewBag.Schedules)
+<div class="schedule-container">
+
+  <div class="schedule-form">
+    <form method="post" action="@Url.Action("AddSchedule", "ProgramHead")" id="addScheduleForm">
+
+        @* Show validation errors *@
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    <tr><td>@sched.SchdId</td><td>@(sched.Description ?? "No sessions assigned yet")</td><td>TBA</td><td>@sched.Room</td>
-                        <td><a href="#" class="btn btn-sm btn-warning edit-sched-btn" data-bs-toggle="modal" data-bs-target="#editScheduleModal" data-parent="#main" data-schdid="@sched.SchdId">Edit</a>
-                            <button class="btn btn-sm btn-danger">Delete</button></td></tr>
+                    <li>@error.ErrorMessage</li>
                 }
-                
-                </tbody>
-            </table>
+                </ul>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label>Academic Year</label>
+            <select id="formAyCode" name="AyCode" class="form-select" required>
+                <option value="">Select Academic Year</option>
+                @foreach(var ay in academicYears)
+                {
+                    <option value="@ay.AyCode" @(Model?.AyCode == ay.AyCode ? "selected" : "")>@ay.AyStartYear - @ay.AyEndYear</option>
+                }
+            </select>
         </div>
-    </div>
-</div>
 
-<!-- Add Schedule Modal -->
-<div class="modal fade" id="addScheduleModal" tabindex="-1" aria-labelledby="addScheduleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <form class="modal-content" id="addScheduleForm" method="post" data-action="/Schedule/Add">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addScheduleModalLabel">Add Schedule</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Course selector -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Course</label>
-                    <select class="form-select" name="CrsCode"><option>Select</option>
-                        @{
-                            courses = ViewBag.Course as List<Fresh_University_Enrollment.Models.Course>;
-                        }
-                        @if (courses != null && courses.Any())
-                        {
-                            foreach (var course in courses)
-                            {
-                                <option value="@course.Crs_Code">@course.Crs_Title</option>
-                            }
-                        }
-                        else
-                        {
-                            <option disabled>No Course found</option>
-                        }
-                    
-                    </select>
-                </div>
-                <div class="col-md-3"><label>Room</label><input type="text" name="Room" class="form-control" /></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" type="submit" data-parent="#addScheduleModal">Add Schedule</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Edit Schedule Modal -->
-<div class="modal fade" id="editScheduleModal" tabindex="-1" aria-labelledby="editScheduleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editScheduleModalLabel">Edit Schedule</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead class="table-primary">
-                        <tr><th>Session Number</th><th>Day</th><th>Start</th><th>End</th><th>Actions</th></tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSessionModal" data-parent="#editScheduleModal">Add Session</button>
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Save</button>
-            </div>
+        <div class="mb-3">
+            <label>Semester</label>
+            <select id="formSemester" name="Semester" class="form-select" required>
+                <option value="">Select Semester</option>
+                <option value="1st Semester" @(Model?.Semester == "1st Semester" ? "selected" : "")>1st Semester</option>
+                <option value="2nd Semester" @(Model?.Semester == "2nd Semester" ? "selected" : "")>2nd Semester</option>
+            </select>
         </div>
-    </div>
-</div>
 
-<!-- Add Session Modal -->
-<div class="modal fade" id="addSessionModal" tabindex="-1" aria-labelledby="addSessionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" data-action="Schedule/AddSession" method="post" id="addSessionForm">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addSessionModalLabel">Add Session</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <div class="row g-3">
-                        <input type="text" name="SchdId" value=""/>
-                        <div class="col-md-4"><label>Day</label><select class="form-select" name="TslDay">
-                            <option value="0">Sunday</option>
-                            <option value="1">Monday</option>
-                            <option value="2">Tuesday</option>
-                            <option value="3">Wednesday</option>
-                            <option value="4">Thursday</option>
-                            <option value="5">Friday</option>
-                            <option value="6">Saturday</option>
-                        </select></div>
-                        <div class="col-md-4"><label>Start</label><input type="time" name="TslStartTime" class="form-control"/></div>
-                        <div class="col-md-4"><label>End</label><input type="time" name="TslEndTime" class="form-control"/></div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" type="submit" id="saveSessionBtn">Add Session</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Edit Session Modal -->
-<div class="modal fade" id="editSessionModal" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editSessionModalLabel">Edit Session</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="row g-3">
-                        <div class="col-md-6"><label>Day</label><select class="form-select"><option>Tuesday</option></select></div>
-                        <div class="col-md-3"><label>Start</label><input type="time" class="form-control" /></div>
-                        <div class="col-md-3"><label>End</label><input type="time" class="form-control" /></div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" id="saveEditedSessionBtn" data-bs-dismiss="modal">Save Changes</button>
-            </div>
+        <div class="mb-3">
+            <label>Course</label>
+            <select id="courseSelect" name="CrsCode" class="form-select" required>
+                <option value="">Select Course</option>
+                @foreach(var course in courses)
+                {
+                    <option value="@course.Crs_Code" @(Model?.CrsCode == course.Crs_Code ? "selected" : "")>@course.Crs_Title</option>
+                }
+            </select>
         </div>
-    </div>
-</div>
-</body>
-</html>
 
-@section Scripts {
-    <script src="@Url.Content("~/Scripts/JQuery/jquery.js")"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="@Url.Content("~/Scripts/MyScript/AddSchedule.js")"></script>
-    <script src="@Url.Content("~/Scripts/MyScript/AddSession.js")"></script>
-    <script src="@Url.Content("~/Scripts/MyScript/SessionsModal.js")"></script>
-    <script src="~/Content/bootstrap.bundle.min.js"></script>
-    <script>
-        var allSessions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Sessions));
-    </script>
-    <script>
-        let lastParent;
-        document.querySelectorAll('[data-bs-target="#addSessionModal"]').forEach(btn => {
-            btn.addEventListener('click', e => lastParent = btn.getAttribute('data-parent'));
-        });
-        document.querySelectorAll('.edit-session-btn').forEach(btn => {
-            btn.addEventListener('click', e => lastParent = btn.getAttribute('data-parent'));
-        });
-        const childModals = ['addSessionModal','editSessionModal'];
-        childModals.forEach(id => {
-            const modalEl = document.getElementById(id);
-            modalEl.addEventListener('hidden.bs.modal', () => {
-                if (lastParent) new bootstrap.Modal(document.querySelector(lastParent)).show();
+        <div class="mb-3">
+            <label>Section</label>
+            <select id="sectionSelect" name="Section" class="form-select" required>
+                <option value="">Select Section</option>
+                @foreach(var sec in sections)
+                {
+                    <option value="@sec.SectionName" @(Model?.Section == sec.SectionName ? "selected" : "")>@sec.SectionName</option>
+                }
+            </select>
+            <button type="button" class="btn btn-link p-0 mt-1" id="addSectionBtn">+ Add Section</button>
+        </div>
+
+        <div class="mb-3">
+            <label>Instructor</label>
+            <select name="InstructorName" class="form-select" required>
+                <option value="">Select Instructor</option>
+                @foreach(var ins in instructors)
+                {
+                    <option value="@ins.InstructorName" @(Model?.InstructorName == ins.InstructorName ? "selected" : "")>@ins.InstructorName</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Room</label>
+            <select name="Room" class="form-select" required>
+                <option value="">Select Room</option>
+                @foreach(var room in rooms)
+                {
+                    <option value="@room.RoomName" @(Model?.Room == room.RoomName ? "selected" : "")>@room.RoomName</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Day</label>
+            <select name="Day" class="form-select" required>
+                <option value="">Select Day</option>
+                <option value="Monday" @(Model?.Day == "Monday" ? "selected" : "")>Monday</option>
+                <option value="Tuesday" @(Model?.Day == "Tuesday" ? "selected" : "")>Tuesday</option>
+                <option value="Wednesday" @(Model?.Day == "Wednesday" ? "selected" : "")>Wednesday</option>
+                <option value="Thursday" @(Model?.Day == "Thursday" ? "selected" : "")>Thursday</option>
+                <option value="Friday" @(Model?.Day == "Friday" ? "selected" : "")>Friday</option>
+                <option value="Saturday" @(Model?.Day == "Saturday" ? "selected" : "")>Saturday</option>
+                <option value="Sunday" @(Model?.Day == "Sunday" ? "selected" : "")>Sunday</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Start Time</label>
+            <input type="time" name="TimeStart" class="form-control" required 
+                   value="@(Model != null && Model.TimeStart != default(TimeSpan) ? Model.TimeStart.ToString(@"hh\:mm") : "")" />
+        </div>
+
+        <div class="mb-3">
+            <label>End Time</label>
+            <input type="time" name="TimeEnd" class="form-control" required 
+                   value="@(Model != null && Model.TimeEnd != default(TimeSpan) ? Model.TimeEnd.ToString(@"hh\:mm") : "")" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Schedule</button>
+    </form>
+  </div>
+
+  <div class="schedule-view">
+    <h4>Existing Schedules</h4>
+
+    <div class="filter-group">
+      <label>Filter by Academic Year</label>
+      <select id="viewAyCode" class="form-select">
+          <option value="">All Academic Years</option>
+          @foreach(var ay in academicYears)
+          {
+              <option value="@ay.AyCode">@ay.AyStartYear - @ay.AyEndYear</option>
+          }
+      </select>
+
+      <label class="mt-3">Filter by Semester</label>
+      <select id="viewSemester" class="form-select">
+          <option value="">All Semesters</option>
+          <option value="1st Semester">1st Semester</option>
+          <option value="2nd Semester">2nd Semester</option>
+      </select>
+    </div>
+
+    <table class="table table-bordered mt-3" id="schedulesTable">
+      <thead>
+        <tr>
+          <th>Academic Year</th>
+          <th>Semester</th>
+          <th>Course</th>
+          <th>Section</th>
+          <th>Instructor</th>
+          <th>Room</th>
+          <th>Day</th>
+          <th>Start</th>
+          <th>End</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows loaded by AJAX -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal for adding section -->
+<div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addSectionForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addSectionModalLabel">Add New Section</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="newSectionName" class="form-control" placeholder="Enter section name" required />
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add Section</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+
+    // Sync Academic Year select inputs
+    $('#formAyCode, #viewAyCode').change(function () {
+        var val = $(this).val();
+        $('#formAyCode, #viewAyCode').val(val).trigger('changeSelect');
+    });
+
+    // Sync Semester select inputs
+    $('#formSemester, #viewSemester').change(function () {
+        var val = $(this).val();
+        $('#formSemester, #viewSemester').val(val).trigger('changeSelect');
+    });
+
+    // Load courses dynamically on semester change (Add form)
+    $('#semesterSelect, #formSemester').on('changeSelect change', function () {
+        var selectedSemester = $(this).val();
+
+        if(selectedSemester){
+            $.ajax({
+                url: '@Url.Action("GetCoursesBySemester", "ProgramHead")',
+                data: { semester: selectedSemester },
+                success: function(data){
+                    var courseSelect = $('#courseSelect');
+                    courseSelect.empty();
+                    courseSelect.append('<option value="">Select Course</option>');
+                    $.each(data, function(i, course){
+                        courseSelect.append('<option value="' + course.Crs_Code + '">' + course.Crs_Title + '</option>');
+                    });
+                    // Clear sections dropdown on courses reload
+                    $('#sectionSelect').empty().append('<option value="">Select Section</option>');
+                }
             });
+        } else {
+            $('#courseSelect').empty().append('<option value="">Select Course</option>');
+            $('#sectionSelect').empty().append('<option value="">Select Section</option>');
+        }
+    });
+
+    // Load sections dynamically when course changes
+    $('#courseSelect').change(function(){
+        var courseCode = $(this).val();
+
+        if(courseCode){
+            $.ajax({
+                url: '@Url.Action("GetSectionsByCourse", "ProgramHead")',
+                data: { courseCode: courseCode },
+                success: function(data){
+                    var sectionSelect = $('#sectionSelect');
+                    sectionSelect.empty();
+                    sectionSelect.append('<option value="">Select Section</option>');
+                    $.each(data, function(i, sec){
+                        sectionSelect.append('<option value="' + sec.SectionName + '">' + sec.SectionName + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#sectionSelect').empty().append('<option value="">Select Section</option>');
+        }
+    });
+
+    // Show add section modal only if course selected
+    $('#addSectionBtn').click(function () {
+        var courseCode = $('#courseSelect').val();
+        if (!courseCode) {
+            alert("Please select a course first before adding a section.");
+            return;
+        }
+        $('#addSectionModal').modal('show');
+        $('#newSectionName').val('');
+    });
+
+    // AJAX submit to add section with selected courseCode
+    $('#addSectionForm').submit(function (e) {
+        e.preventDefault();
+
+        var sectionName = $('#newSectionName').val().trim();
+        var courseCode = $('#courseSelect').val();
+
+        if (!sectionName) {
+            alert("Please enter a section name.");
+            return;
+        }
+
+        if (!courseCode) {
+            alert("Course selection is required.");
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("AddSection", "ProgramHead")',
+            method: 'POST',
+            data: { sectionName: sectionName, courseCode: courseCode },
+            success: function (response) {
+                if (response.success) {
+                    $('#addSectionModal').modal('hide');
+                    var sectionSelect = $('#sectionSelect');
+                    sectionSelect.append('<option value="' + sectionName + '">' + sectionName + '</option>');
+                    sectionSelect.val(sectionName);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert("Error adding section. Please try again.");
+            }
         });
-    </script>
+    });
+
+    // Load schedules data in table filtered by Academic Year and Semester
+    function loadSchedules(ayCode, semester) {
+        $.ajax({
+            url: '@Url.Action("GetSchedules", "ProgramHead")',
+            data: { ayCode: ayCode, semester: semester },
+            success: function (data) {
+                var tbody = $('#schedulesTable tbody');
+                tbody.empty();
+                if (data.length === 0) {
+                    tbody.append('<tr><td colspan="9" class="text-center">No schedules found.</td></tr>');
+                } else {
+                    $.each(data, function (i, sched) {
+                        tbody.append('<tr>' +
+                            '<td>' + sched.AyCode + '</td>' +
+                            '<td>' + sched.Semester + '</td>' +
+                            '<td>' + sched.CrsCode + '</td>' +
+                            '<td>' + sched.Section + '</td>' +
+                            '<td>' + sched.InstructorName + '</td>' +
+                            '<td>' + sched.Room + '</td>' +
+                            '<td>' + sched.Day + '</td>' +
+                            '<td>' + sched.TimeStart + '</td>' +    // TimeStart is string now
+                            '<td>' + sched.TimeEnd + '</td>' +      // TimeEnd is string now
+                            '</tr>');
+                    });
+                }
+            },
+            error: function () {
+                alert('Failed to load schedules.');
+            }
+        });
+    }
+
+    // Initial load with no filters
+    loadSchedules('', '');
+
+    // Sync filters & reload schedules on change
+    $('#formAyCode, #formSemester, #viewAyCode, #viewSemester').on('change', function () {
+        var ay = $('#formAyCode').val();
+        var sem = $('#formSemester').val();
+
+        $('#formAyCode, #viewAyCode').val(ay);
+        $('#formSemester, #viewSemester').val(sem);
+
+        loadSchedules(ay, sem);
+    });
+
+    // Also trigger schedules load when filter dropdowns change separately
+    $('#viewAyCode, #viewSemester').change(function () {
+        var ay = $(this).val();
+        var sem = $('#viewSemester').val();
+
+        $('#formAyCode, #viewAyCode').val(ay);
+        $('#formSemester, #viewSemester').val(sem);
+
+        loadSchedules(ay, sem);
+    });
+
+    // Validate that End Time is after Start Time on form submit
+    $('#addScheduleForm').submit(function(e) {
+        var startTime = $('input[name="TimeStart"]').val();
+        var endTime = $('input[name="TimeEnd"]').val();
+
+        if (startTime && endTime && endTime <= startTime) {
+            alert("End Time must be later than Start Time.");
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+</script>
 }

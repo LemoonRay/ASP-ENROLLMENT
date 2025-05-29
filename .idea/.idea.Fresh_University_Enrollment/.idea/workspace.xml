@@ -8,19 +8,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b3e7d800-34df-40fc-b921-9544f37113d3" name="Changes" comment="- Jayson's Delete Course function">
-      <change afterPath="$PROJECT_DIR$/Controllers/CurriculumController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Scripts/MyScript/AddCurriculum.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/Instructor.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/Room.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/Section.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fresh_University_Enrollment/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fresh_University_Enrollment/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/config/applicationhost.config" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/config/applicationhost.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controllers/Auth/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/Auth/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controllers/ProgramHeadController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/ProgramHeadController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controllers/ScheduleController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/ScheduleController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Fresh_University_Enrollment.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Fresh_University_Enrollment.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/MyScript/LogIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/MyScript/LogIn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/Admin/Curriculum.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Admin/Curriculum.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/Auth/Login.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Auth/Login.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/Auth/LoginFaculty.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Auth/LoginFaculty.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/Auth/SignUp.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Auth/SignUp.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/Home/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Home/Index.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web.config" beforeDir="false" afterPath="$PROJECT_DIR$/Web.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Schedule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Schedule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scripts/MyScript/Curriculum.js" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/MyScript/Curriculum.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Program-Head/Dashboard.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Program-Head/Dashboard.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Program-Head/SetSchedules.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Program-Head/SetSchedules.cshtml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,6 +164,8 @@
       <workItem from="1748380741521" duration="1371000" />
       <workItem from="1748382332030" duration="4996000" />
       <workItem from="1748439452925" duration="68000" />
+      <workItem from="1748447575962" duration="11248000" />
+      <workItem from="1748466476615" duration="13098000" />
     </task>
     <task id="LOCAL-00001" summary="add curriculum good">
       <option name="closed" value="true" />

@@ -199,9 +199,12 @@
     <Compile Include="Models\Curriculum.cs" />
     <Compile Include="Models\CurriculumCourse.cs" />
     <Compile Include="Models\Faculty.cs" />
+    <Compile Include="Models\Instructor.cs" />
     <Compile Include="Models\Prerequisite.cs" />
     <Compile Include="Models\Program.cs" />
+    <Compile Include="Models\Room.cs" />
     <Compile Include="Models\Schedule.cs" />
+    <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Semester.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Student.cs" />
